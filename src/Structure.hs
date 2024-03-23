@@ -8,9 +8,8 @@ This module contains all datatype declarations and functions that work with the 
 
 module Structure (Tree(None, Leaf, Node), TreeZipper, buildTree) where
 
-import Text.Read ( readEither )
+import Text.Read (readEither)
 import Data.List.Split (splitOn)
-import Data.Text (splitOn)
 
 -- Tree datatype
 type Class = String
@@ -31,7 +30,7 @@ type TreeZipper = [Step]
 buildTree :: [String] -> Either String Tree
 buildTree linesAdd =
     case stringToTree (head linesAdd) >>= (\x -> addSubtrees (x,[]) (tail linesAdd)) of
-        Right (tree, ctx) -> Right tree
+        Right (tree, _) -> Right tree
         Left string -> Left string
 
 -- Add subtrees from list to the existing tree.
@@ -42,19 +41,19 @@ addSubtrees tree (current:addLines) = insertToTree (getRoot tree) current >>= (`
 -- Inserts one node from string to tree.
 insertToTree :: (Tree, TreeZipper) -> String -> Either String (Tree, TreeZipper)
 -- Trying to insert into a Leaf or None.
-insertToTree (Leaf _, _) strTree = Left "Invalid tree structure: cannot insert into Leaf."
-insertToTree (None, _) strTree = Left "Invalid tree structure: cannot insert into None."
+insertToTree (Leaf _, _) _ = Left "Invalid tree structure: cannot insert into Leaf."
+insertToTree (None, _) _ = Left "Invalid tree structure: cannot insert into None."
 -- Left subtree of the current Node is empty - add new item.
 insertToTree (Node isFree ind th None right, ctx) strTree =
     stringToTree strTree >>= (\x -> return $ getRoot (Node isFree ind th x right, ctx))
 -- Left node is free - go left.
-insertToTree current@(Node isFree ind th left@(Node True _ _ _ _) right, ctx) strTree =
+insertToTree (Node isFree ind th left@(Node True _ _ _ _) right, ctx) strTree =
     insertToTree (left, L isFree ind th right:ctx) strTree
 -- Right subtree of the current Node is empty - add new item.
 insertToTree (Node isFree ind th left None, ctx) strTree =
     stringToTree strTree >>= (\x -> return $ getRoot (Node isFree ind th left x, ctx))
 -- Left subtree of the current Node is not free, right subtree is free Node - go right.
-insertToTree current@(Node isFree ind th left right@(Node True _ _ _ _), ctx) strTree
+insertToTree (Node isFree ind th left right@(Node True _ _ _ _), ctx) strTree
     = insertToTree (right, R isFree ind th left:ctx) strTree
 -- No subtree is available - label as not free and go up.
 insertToTree node strTree = goUpAndLabel node >>= (`insertToTree` strTree)
@@ -67,7 +66,7 @@ stringToTree line
         | head values == "Leaf" && length values == 2 = Right $ Leaf (values!!1)
         | otherwise = Left "Invalid tree structure - wrong label or number of arguments."
     where
-        values = splitOn ':' line
+        values = splitOn ":" line
         readNode =
             readEither (values!!1) >>= (\x ->
             readEither (values!!2) >>= (\y ->
@@ -86,3 +85,4 @@ getRoot node = getRoot (goUp node)
     where
         goUp (current, L isFree ind th right:rest) = (Node isFree ind th current right, rest)
         goUp (current, R isFree ind th left:rest) = (Node isFree ind th left current, rest)
+        goUp _ = (None, [])
