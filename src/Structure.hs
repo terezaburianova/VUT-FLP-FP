@@ -11,6 +11,15 @@ module Structure (Tree(None, Leaf, Node), TreeZipper, buildTree) where
 import Text.Read (readEither)
 import Data.List.Split (splitOn)
 
+instance Show Tree where
+    show :: Tree -> String
+    show = showTree 0
+
+showTree :: Int -> Tree -> [Char]
+showTree n (Leaf cl) = replicate n ' ' ++ "Leaf: " ++ cl ++ "\n"
+showTree n (Node _ ind th l r) = replicate n ' ' ++ "Node: " ++ show ind ++ ", " ++ show th ++ "\n" ++ showTree (n+2) l ++ showTree (n+2) r
+showTree n _ = replicate n ' ' ++ "Invalid tree structure.\n"
+
 -- Tree datatype
 type Class = String
 type Index = Int
@@ -20,7 +29,7 @@ data Tree =
     None |
     Leaf Class |
     Node IsFree Index Threshold Tree Tree
-    deriving (Eq, Show)
+    deriving (Eq)
 
 -- Tree zipper
 data Step = L IsFree Index Threshold Tree | R IsFree Index Threshold Tree deriving (Show)
