@@ -12,7 +12,6 @@ import Text.Read (readEither)
 import Data.List.Split (splitOn)
 
 instance Show Tree where
-    show :: Tree -> String
     show = showTree 0
 
 showTree :: Int -> Tree -> [Char]
@@ -79,7 +78,7 @@ stringToTree line
         readNode =
             readEither (values!!1) >>= (\x ->
             readEither (values!!2) >>= (\y ->
-            pure (Node True x y None None)))
+            return (Node True x y None None)))
 
 -- Labels the current node as filled and focuses on the parent of the current node.
 goUpAndLabel :: (Tree, TreeZipper) -> Either String (Tree, TreeZipper)

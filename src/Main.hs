@@ -14,7 +14,7 @@ import Classification as C
 import Data.Char (isSpace)
 import Data.List.Split (splitOn)
 import System.Environment (getArgs)
-import System.Directory
+import System.Directory (doesFileExist)
 
 main :: IO ()
 main = do
@@ -39,7 +39,7 @@ classify args =
                 clData = map (map read . splitOn ",") $ lines dataContents :: [[Float]]
             case tree of
                 (Left e) -> putStrLn e
-                (Right t) -> putStrLn $ unlines $ classifyAll t clData
+                (Right t) -> putStr $ init $ unlines $ classifyAll t clData
         else
             putStrLn "Missing input file."
 
@@ -47,8 +47,14 @@ train :: [String] -> IO ()
 train args = do
     if null args then
         putStrLn "Invalid number of arguments."
-    else
-        putStrLn "hi, I'm not ready yet"
+    else do
+        fileExists <- doesFileExist $ head args
+        if fileExists then do
+            -- trainContents <- readFile (head args)
+            putStrLn "Not ready yet."
+        else
+            putStrLn "Missing input file."
+
 
 -- helper functions for string processing
 replace :: Char -> Char -> [String] -> [String]
