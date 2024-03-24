@@ -6,7 +6,7 @@ Author      : Tereza Burianova <xburia28@stud.fit.vutbr.cz>
 This module contains all datatype declarations and functions that work with the decision tree stsructure.
 -}
 
-module Structure (Tree(None, Leaf, Node), TreeZipper, buildTree) where
+module Structure (buildTree, Class, Tree(None, Leaf, Node), TreeZipper) where
 
 import Text.Read (readEither)
 import Data.List.Split (splitOn)
@@ -15,9 +15,9 @@ instance Show Tree where
     show = showTree 0
 
 showTree :: Int -> Tree -> [Char]
-showTree n (Leaf cl) = replicate n ' ' ++ "Leaf: " ++ cl ++ "\n"
-showTree n (Node _ ind th l r) = replicate n ' ' ++ "Node: " ++ show ind ++ ", " ++ show th ++ "\n" ++ showTree (n+2) l ++ showTree (n+2) r
-showTree n _ = replicate n ' ' ++ "Invalid tree structure.\n"
+showTree n (Leaf cl) = replicate n ' ' ++ "Leaf: " ++ cl
+showTree n (Node _ ind th l r) = replicate n ' ' ++ "Node: " ++ show ind ++ ", " ++ show th ++ "\n" ++ showTree (n+2) l ++ "\n" ++ showTree (n+2) r
+showTree n _ = replicate n ' ' ++ "Invalid tree structure." ++ "\n"
 
 -- Tree datatype
 type Class = String
@@ -84,7 +84,7 @@ stringToTree line
 goUpAndLabel :: (Tree, TreeZipper) -> Either String (Tree, TreeZipper)
 goUpAndLabel (Node _ indC thC lC rC, L isFree ind th right:rest) = Right (Node isFree ind th (Node False indC thC lC rC) right, rest)
 goUpAndLabel (Node _ indC thC lC rC, R isFree ind th left:rest) = Right (Node isFree ind th left (Node False indC thC lC rC), rest)
-goUpAndLabel _ = Left "Invalid tree structure: Cannot go up in the tree structure."
+goUpAndLabel a = Left $ "Invalid tree structure: Cannot go up in the tree structure from: " ++ show a
 
 -- Gets the current tree with focus on the root node.
 getRoot :: (Tree, TreeZipper) -> (Tree, TreeZipper)
