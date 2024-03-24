@@ -1,4 +1,4 @@
-module Training (trainTree) where
+module Training where
 
 import Structure (Tree(Node, Leaf, None), Class)
 import Data.List (minimumBy, nub, partition, sort, transpose)
@@ -68,7 +68,7 @@ gini clas = 1 - giniSum (nub clas) clas
 giniSum :: [Class] -> [Class] -> Float
 giniSum [] _ = 0
 giniSum _ [] = 0
-giniSum (clas:uniqueClas) clasData = (fromIntegral (occurences clas clasData) / fromIntegral (length clasData)) ** 2 - giniSum uniqueClas clasData
+giniSum (clas:uniqueClas) clasData = (fromIntegral (occurences clas clasData) / fromIntegral (length clasData)) ** 2 + giniSum uniqueClas clasData
 
 -- Get number of occurences of a String in a list of Strings.
 occurences :: String -> [String] -> Int
