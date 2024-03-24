@@ -1,7 +1,7 @@
 HC_OPTS = -Wall -package directory -package split
 OUT = ./out
-SRCS = src/Main.hs src/Structure.hs src/Classification.hs
-OBJS = out/Main.o out/Structure.o out/Classification.o
+SRCS = src/Main.hs src/Structure.hs src/Classification.hs src/Training.hs
+OBJS = out/Main.o out/Structure.o out/Classification.o out/Training.o
 # .PHONY : all clean
 
 all: build

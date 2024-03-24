@@ -10,8 +10,10 @@ It loads the file, parses the arguments and performs actions based on the curren
 module Main where
 
 import Structure (buildTree)
-import Classification as C
+import Classification (classifyAll)
+import Training (trainTree)
 import Data.Char (isSpace)
+import Data.List (transpose)
 import Data.List.Split (splitOn)
 import System.Environment (getArgs)
 import System.Directory (doesFileExist)
@@ -50,8 +52,15 @@ train args = do
     else do
         fileExists <- doesFileExist $ head args
         if fileExists then do
-            -- trainContents <- readFile (head args)
-            putStrLn "Not ready yet."
+            trainContents <- readFile (head args)
+            let trainData = transpose $ map (splitOn ",") . lines $ trainContents
+            if length trainData < 2 then
+                putStrLn "Invalid structure of training data."
+            else do
+                let classes = last trainData
+                    datas = map (map read) $ init trainData
+                    tree = trainTree datas classes
+                print tree
         else
             putStrLn "Missing input file."
 
