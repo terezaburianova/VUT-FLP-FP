@@ -1,4 +1,13 @@
-module Training where
+{-|
+Module      : Training
+Description : Generation of a decision tree based on the provided training data.
+Author      : Tereza Burianova <xburia28@stud.fit.vutbr.cz>
+
+This module contains the functions for new decision tree generation based on the provided training data,
+using the CART algorithm.
+-}
+
+module Training (trainTree) where
 
 import Structure (Tree(Node, Leaf, None), Class)
 import Data.List (minimumBy, nub, partition, sort, transpose)
@@ -7,6 +16,7 @@ import Data.Ord (comparing)
 type Midpoint = Float
 type ColIndex = Int
 
+-- Get the decision tree based on the training data.
 trainTree :: [[Float]] -> [Class] -> Tree
 trainTree cols clas
     | null cols = None
@@ -79,6 +89,7 @@ partitionedClasses :: [(Float, Class)] -> Midpoint -> ([Class], [Class])
 partitionedClasses pairs midpoint = (map snd fstHalf, map snd sndHalf)
     where (fstHalf,sndHalf) = partition (\(x, _) -> x <= midpoint) pairs
 
+-- Partition data based on the provided index and threshold.
 partitionedData :: [[Float]] -> [Class] -> ColIndex -> Midpoint -> (([[Float]], [Class]), ([[Float]], [Class]))
 partitionedData datas clas ind mp = ((getCols leftD, getClas leftD), (getCols rightD, getClas rightD))
     where

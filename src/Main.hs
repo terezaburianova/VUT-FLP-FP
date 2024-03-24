@@ -4,7 +4,8 @@ Description : Entry point for FLP project.
 Author      : Tereza Burianova <xburia28@stud.fit.vutbr.cz>
 
 This module serves as the entry point for the FLP project.
-It loads the file, parses the arguments and performs actions based on the current mode.
+It loads the file, parses the arguments, performs actions based 
+on the current mode and prints out the results to the standard output.
 -}
 
 module Main where
@@ -64,8 +65,7 @@ train args = do
         else
             putStrLn "Missing input file."
 
-
--- helper functions for string processing
+-- helper functions for string processing.
 replace :: Char -> Char -> [String] -> [String]
 replace _ _ [] = []
 replace what with (str:strL) = map (\x -> if x == what then with else x) str : replace what with strL
